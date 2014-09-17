@@ -67,3 +67,23 @@ fpsWhen <- function(rate, when) {
     tick()
   })
 }
+
+
+#' The current time.
+#'
+#' @export
+#' @return A reactive \code{\link{POSIXct}}.
+#' @examples
+#' shinyApp(
+#'   ui = fluidPage(textOutput("tick")),
+#'   server = function(input, output) {
+#'     tick <- every(1)
+#'     output$tick <- renderText(as.character(tick()))
+#'   }
+#' )
+every <- function(seconds) {
+  reactive({
+    invalidateLater(seconds * 1000, NULL)
+    Sys.time()
+  })
+}

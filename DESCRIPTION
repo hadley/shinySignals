@@ -1,8 +1,13 @@
 Package: shinySignals
-Title: What the package does (one line)
 Version: 0.1
-Authors@R: 'Hadley Wickham <h.wickham@gmail.com> [aut,cre]'
-Description: What the package does (one paragraph)
+Title: Stream functions from shiny.
+Description: shinySignals provides ports many useful functions from the Elm
+    programming language. These functions provide tools for working with
+    streams.
+Authors@R: as.person(c(
+    'Hadley Wickham <h.wickham@gmail.com> [aut,cre]',
+    'RStudio [cph]'
+    ))
 Depends:
     R (>= 3.1.0),
     shiny

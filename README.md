@@ -1,5 +1,7 @@
 # shinySignals
 
+[![Build Status](https://travis-ci.org/hadley/shinySignals.png?branch=master)](https://travis-ci.org/hadley/shinySignals)
+
 Shiny is a reactive programming framework, but it focusses mainly on the nuts and bolts of generating interactive analysis apps. shinySignals is an attempt to port more functional programming tools for working with signals (reactives) as interesting fundamental objects in their own right. 
 
 Currently, shinySignals only implements the [Signal](http://library.elm-lang.org/catalog/elm-lang-Elm/0.12.3/Signal) and [Time](http://library.elm-lang.org/catalog/elm-lang-Elm/0.12.3/Time) libraries from the [Elm programming language](http://elm-lang.org). It's expected that this package will grow over time to include useful techniques from other FRP frameworks, and to include uniquely R-like features.

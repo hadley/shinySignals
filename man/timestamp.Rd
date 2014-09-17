@@ -19,7 +19,7 @@ Add a timestamp to any signal.
 shinyApp(
   ui = fluidPage(textOutput("tick"), textOutput("time")),
   server = function(input, output) {
-    tick <- timestamp(fps(10))
+    tick <- fps(10) \%>\% timestamp()
     output$tick <- renderText(tick()[[1]])
     output$time <- renderText(tick()[[2]])
   }

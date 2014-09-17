@@ -36,11 +36,11 @@ fps <- function(rate) {
 #' shinyApp(
 #'   ui = fluidPage(textOutput("delta"), checkboxInput("pause", "pause")),
 #'   server = function(input, output) {
-#'     tick <- fpsWhen(10, reactive(!input$pause))
+#'     tick <- reactive(!input$pause) %>% fpsWhen(10)
 #'     output$delta <- renderText(tick())
 #'   }
 #' )
-fpsWhen <- function(rate, when) {
+fpsWhen <- function(when, rate) {
   lastTime <- NA
   tick <- function(now = proc.time()[[3]]) {
     if (is.na(lastTime)) {
@@ -98,7 +98,7 @@ every <- function(seconds) {
 #' shinyApp(
 #'   ui = fluidPage(textOutput("tick"), textOutput("time")),
 #'   server = function(input, output) {
-#'     tick <- timestamp(fps(10))
+#'     tick <- fps(10) %>% timestamp()
 #'     output$tick <- renderText(tick()[[1]])
 #'     output$time <- renderText(tick()[[2]])
 #'   }
@@ -121,7 +121,7 @@ timestamp <- function(signal) {
 #' shinyApp(
 #'   ui = fluidPage(actionButton("click", "click"), textOutput("clicked")),
 #'   server = function(input, output) {
-#'     clicked <- since(reactive(input$click), 2)
+#'     clicked <- reactive(input$click) %>% since(2)
 #'     output$clicked <- renderText(clicked())
 #'   }
 #' )

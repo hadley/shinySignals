@@ -3,12 +3,12 @@
 \alias{fpsWhen}
 \title{Conditionally file a signal at fixed fps.}
 \usage{
-fpsWhen(rate, when)
+fpsWhen(when, rate)
 }
 \arguments{
-\item{rate}{Number of signals to fire per second}
-
 \item{when}{A reactive that evaluates to TRUE or FALSE.}
+
+\item{rate}{Number of signals to fire per second}
 }
 \value{
 A reactive giving the time in seconds since the last signal.
@@ -22,7 +22,7 @@ Conditionally file a signal at fixed fps.
 shinyApp(
   ui = fluidPage(textOutput("delta"), checkboxInput("pause", "pause")),
   server = function(input, output) {
-    tick <- fpsWhen(10, reactive(!input$pause))
+    tick <- reactive(!input$pause) \%>\% fpsWhen(10)
     output$delta <- renderText(tick())
   }
 )

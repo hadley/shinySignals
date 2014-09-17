@@ -20,7 +20,7 @@ Has it been \code{delay} seconds since the last signal?
 shinyApp(
   ui = fluidPage(actionButton("click", "click"), textOutput("clicked")),
   server = function(input, output) {
-    clicked <- since(reactive(input$click), 2)
+    clicked <- reactive(input$click) \%>\% since(2)
     output$clicked <- renderText(clicked())
   }
 )

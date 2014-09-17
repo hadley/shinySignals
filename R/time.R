@@ -8,7 +8,7 @@
 #' shinyApp(
 #'   ui = fluidPage(textOutput("delta")),
 #'   server = function(input, output) {
-#'     tick <- fps(10, NULL)
+#'     tick <- fps(10)
 #'     output$delta <- renderText(tick())
 #'   }
 #' )
@@ -16,7 +16,7 @@ fps <- function(rate) {
   cur <- proc.time()[[1]]
 
   reactive({
-    invalidateLater(1000 / rate)
+    invalidateLater(1000 / rate, NULL)
     last <- cur
     cur <<- proc.time()[[1]]
 
@@ -54,7 +54,7 @@ fpsWhen <- function(rate, when) {
   rv <- reactiveValues(nonce = 0)
 
   o <- observe({
-    invalidateLater(1000 / rate)
+    invalidateLater(1000 / rate, NULL)
     if (isTRUE(when())) {
       rv$nonce <- isolate(rv$nonce) + 1
     } else {
@@ -67,6 +67,3 @@ fpsWhen <- function(rate, when) {
     tick()
   })
 }
-
-
-

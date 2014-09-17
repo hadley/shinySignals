@@ -3,7 +3,7 @@
 \alias{fpsWhen}
 \title{Conditionally file a signal at fixed fps.}
 \usage{
-fpsWhen(rate, when, session = NULL)
+fpsWhen(rate, when)
 }
 \arguments{
 \item{rate}{Number of signals to fire per second}

@@ -3,7 +3,7 @@
 \alias{fps}
 \title{Fire a signal at fixed fps.}
 \usage{
-fps(rate, session = NULL)
+fps(rate)
 }
 \arguments{
 \item{rate}{Number of signals to fire per second}

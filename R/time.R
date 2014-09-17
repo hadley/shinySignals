@@ -1,3 +1,6 @@
+#' @import shiny
+NULL
+
 #' Fire a signal at fixed fps.
 #'
 #' @param rate Number of signals to fire per second

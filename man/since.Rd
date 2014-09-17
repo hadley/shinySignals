@@ -3,20 +3,21 @@
 \alias{since}
 \title{Since last sigal?}
 \usage{
-since(signal, delay)
+since(signal, time)
 }
 \arguments{
 \item{signal}{A reactive.}
 
-\item{delay}{Delay in seconds.}
+\item{time}{Delay in seconds.}
 }
 \value{
 A reactive boolean.
 }
 \description{
-Has it been \code{delay} seconds since the last signal?
+Has it been \code{time} seconds since the last signal?
 }
 \examples{
+\donttest{
 shinyApp(
   ui = fluidPage(actionButton("click", "click"), textOutput("clicked")),
   server = function(input, output) {
@@ -24,5 +25,6 @@ shinyApp(
     output$clicked <- renderText(clicked())
   }
 )
+}
 }
 

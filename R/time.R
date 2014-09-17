@@ -5,6 +5,7 @@
 #' @return A reactive giving the time in seconds between the current and
 #'   previous signal being fired
 #' @examples
+#' \donttest{
 #' shinyApp(
 #'   ui = fluidPage(textOutput("delta")),
 #'   server = function(input, output) {
@@ -12,6 +13,7 @@
 #'     output$delta <- renderText(tick())
 #'   }
 #' )
+#' }
 fps <- function(rate) {
   cur <- proc.time()[[1]]
 
@@ -33,14 +35,26 @@ fps <- function(rate) {
 #'   signal gives the amount of sum the output signal has been running
 #' @export
 #' @examples
+#' \donttest{
 #' shinyApp(
-#'   ui = fluidPage(textOutput("delta"), checkboxInput("pause", "pause")),
+#'   ui = fluidPage(
+#'     textOutput("delta"),
+#'     textOutput("running"),
+#'     textOutput("count"),
+#'     checkboxInput("pause", "pause")
+#'   ),
 #'   server = function(input, output) {
 #'     tick <- reactive(!input$pause) %>% fpsWhen(10)
+#'     running <- tick %>% reducePast(`+`, 0)
+#'     count <- tick %>% count()
 #'     output$delta <- renderText(tick())
+#'     output$running <- renderText(running())
+#'     output$count <- renderText(count())
 #'   }
 #' )
+#' }
 fpsWhen <- function(when, rate) {
+
   lastTime <- NA
   tick <- function(now = proc.time()[[3]]) {
     if (is.na(lastTime)) {
@@ -73,7 +87,9 @@ fpsWhen <- function(when, rate) {
 #'
 #' @export
 #' @return A reactive \code{\link{POSIXct}}.
+#' @param seconds Number of seconds to wait between signals.
 #' @examples
+#' \donttest{
 #' shinyApp(
 #'   ui = fluidPage(textOutput("tick")),
 #'   server = function(input, output) {
@@ -81,6 +97,7 @@ fpsWhen <- function(when, rate) {
 #'     output$tick <- renderText(as.character(tick()))
 #'   }
 #' )
+#' }
 every <- function(seconds) {
   reactive({
     invalidateLater(seconds * 1000, NULL)
@@ -90,11 +107,12 @@ every <- function(seconds) {
 
 #' Add a timestamp to any signal.
 #'
-#' @param Input signal
+#' @param signal Input signal
 #' @return A reactive list: the first element is a timestamp (a
 #'   \code{\link{POSIXct}}), the second element is the \code{signal}.
 #' @export
 #' @examples
+#' \donttest{
 #' shinyApp(
 #'   ui = fluidPage(textOutput("tick"), textOutput("time")),
 #'   server = function(input, output) {
@@ -103,21 +121,50 @@ every <- function(seconds) {
 #'     output$time <- renderText(tick()[[2]])
 #'   }
 #' )
+#' }
 timestamp <- function(signal) {
   reactive({
     list(Sys.time(), signal())
   })
 }
 
+delay <- function(signal, time) {
+  # Queue timestamps and signals
+  # Check if any ready to be dequeued
+  # If not, wait enough until ready
+
+  signals <- list()
+  queue <- function(x) {
+    signals <<- c(signals, list(x))
+  }
+  dequeue <- function(x) {
+    out <- signals[[1]]
+    signals <<- signals[-1]
+    out
+  }
+
+  observe({
+    queue(signal())
+  })
+
+  reactive({
+    signal()
+    invalidateLater(time * 1000)
+    isolate(dequeue())
+  })
+
+}
+
 #' Since last sigal?
 #'
-#' Has it been \code{delay} seconds since the last signal?
+#' Has it been \code{time} seconds since the last signal?
 #'
 #' @param signal A reactive.
-#' @param delay Delay in seconds.
+#' @param time Delay in seconds.
 #' @return A reactive boolean.
 #' @export
 #' @examples
+#' \donttest{
 #' shinyApp(
 #'   ui = fluidPage(actionButton("click", "click"), textOutput("clicked")),
 #'   server = function(input, output) {
@@ -125,7 +172,8 @@ timestamp <- function(signal) {
 #'     output$clicked <- renderText(clicked())
 #'   }
 #' )
-since <- function(signal, delay) {
+#' }
+since <- function(signal, time) {
   rv <- reactiveValues(on = FALSE, last_signal = now())
 
   observe({
@@ -134,11 +182,11 @@ since <- function(signal, delay) {
     isolate(rv$on <- TRUE)
   })
   observe({
-    if (now() >= rv$last_signal + delay) {
+    if (now() >= rv$last_signal + time) {
       isolate(rv$on <- FALSE)
     }
     if (rv$on) {
-      invalidateLater(delay * 1000, NULL)
+      invalidateLater(time * 1000, NULL)
     }
   })
 

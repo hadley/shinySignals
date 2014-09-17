@@ -19,12 +19,23 @@ A reactive giving the time in seconds since the last signal.
 Conditionally file a signal at fixed fps.
 }
 \examples{
+\donttest{
 shinyApp(
-  ui = fluidPage(textOutput("delta"), checkboxInput("pause", "pause")),
+  ui = fluidPage(
+    textOutput("delta"),
+    textOutput("running"),
+    textOutput("count"),
+    checkboxInput("pause", "pause")
+  ),
   server = function(input, output) {
     tick <- reactive(!input$pause) \%>\% fpsWhen(10)
+    running <- tick \%>\% reducePast(`+`, 0)
+    count <- tick \%>\% count()
     output$delta <- renderText(tick())
+    output$running <- renderText(running())
+    output$count <- renderText(count())
   }
 )
+}
 }
 

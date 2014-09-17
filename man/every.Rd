@@ -5,6 +5,9 @@
 \usage{
 every(seconds)
 }
+\arguments{
+\item{seconds}{Number of seconds to wait between signals.}
+}
 \value{
 A reactive \code{\link{POSIXct}}.
 }
@@ -12,6 +15,7 @@ A reactive \code{\link{POSIXct}}.
 The current time.
 }
 \examples{
+\donttest{
 shinyApp(
   ui = fluidPage(textOutput("tick")),
   server = function(input, output) {
@@ -19,5 +23,6 @@ shinyApp(
     output$tick <- renderText(as.character(tick()))
   }
 )
+}
 }
 

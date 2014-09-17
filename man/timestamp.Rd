@@ -6,7 +6,7 @@
 timestamp(signal)
 }
 \arguments{
-\item{Input}{signal}
+\item{signal}{Input signal}
 }
 \value{
 A reactive list: the first element is a timestamp (a
@@ -16,6 +16,7 @@ A reactive list: the first element is a timestamp (a
 Add a timestamp to any signal.
 }
 \examples{
+\donttest{
 shinyApp(
   ui = fluidPage(textOutput("tick"), textOutput("time")),
   server = function(input, output) {
@@ -24,5 +25,6 @@ shinyApp(
     output$time <- renderText(tick()[[2]])
   }
 )
+}
 }
 

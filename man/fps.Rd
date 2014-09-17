@@ -16,6 +16,7 @@ A reactive giving the time in seconds between the current and
 Fire a signal at fixed fps.
 }
 \examples{
+\donttest{
 shinyApp(
   ui = fluidPage(textOutput("delta")),
   server = function(input, output) {
@@ -23,5 +24,6 @@ shinyApp(
     output$delta <- renderText(tick())
   }
 )
+}
 }
 

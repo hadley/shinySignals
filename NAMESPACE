@@ -3,4 +3,5 @@
 export(every)
 export(fps)
 export(fpsWhen)
+export(since)
 export(timestamp)

@@ -42,7 +42,7 @@ fps <- function(rate) {
 #' )
 fpsWhen <- function(rate, when) {
   lastTime <- NA
-  tick <- function(now = proc.time()[[1]]) {
+  tick <- function(now = proc.time()[[3]]) {
     if (is.na(lastTime)) {
       lastTime <<- now
     }
@@ -108,3 +108,41 @@ timestamp <- function(signal) {
     list(Sys.time(), signal())
   })
 }
+
+#' Since last sigal?
+#'
+#' Has it been \code{delay} seconds since the last signal?
+#'
+#' @param signal A reactive.
+#' @param delay Delay in seconds.
+#' @return A reactive boolean.
+#' @export
+#' @examples
+#' shinyApp(
+#'   ui = fluidPage(actionButton("click", "click"), textOutput("clicked")),
+#'   server = function(input, output) {
+#'     clicked <- since(reactive(input$click), 2)
+#'     output$clicked <- renderText(clicked())
+#'   }
+#' )
+since <- function(signal, delay) {
+  rv <- reactiveValues(on = FALSE, last_signal = now())
+
+  observe({
+    signal()
+    isolate(rv$last_signal <- now())
+    isolate(rv$on <- TRUE)
+  })
+  observe({
+    if (now() >= rv$last_signal + delay) {
+      isolate(rv$on <- FALSE)
+    }
+    if (rv$on) {
+      invalidateLater(delay * 1000, NULL)
+    }
+  })
+
+  reactive(rv$on)
+}
+
+now <- function() proc.time()[[3]]

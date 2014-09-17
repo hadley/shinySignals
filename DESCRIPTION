@@ -8,3 +8,5 @@ Depends:
     shiny
 License: GPL-3
 LazyData: true
+Imports:
+    magrittr

@@ -87,3 +87,24 @@ every <- function(seconds) {
     Sys.time()
   })
 }
+
+#' Add a timestamp to any signal.
+#'
+#' @param Input signal
+#' @return A reactive list: the first element is a timestamp (a
+#'   \code{\link{POSIXct}}), the second element is the \code{signal}.
+#' @export
+#' @examples
+#' shinyApp(
+#'   ui = fluidPage(textOutput("tick"), textOutput("time")),
+#'   server = function(input, output) {
+#'     tick <- timestamp(fps(10))
+#'     output$tick <- renderText(tick()[[1]])
+#'     output$time <- renderText(tick()[[2]])
+#'   }
+#' )
+timestamp <- function(signal) {
+  reactive({
+    list(Sys.time(), signal())
+  })
+}

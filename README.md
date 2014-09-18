@@ -23,6 +23,6 @@ Compared to the Elm API, the main change is that the key signal always comes fir
 library(shinySignals)
 fps(30) %>% count()
 
-step <- reactive{(fps(30); sample(c(-1, 1), 1))}
+step <- reactive({fps(30); sample(c(-1, 0, 1), 1)})
 walk <- step %>% reducePast(`+`, 0)
 ```
